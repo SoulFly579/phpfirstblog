@@ -19,7 +19,7 @@
                         <th>Category</th>
                         <th>Author</th>
                         <th>Date</th>
-                        <th>Comments</th>
+                        <th>Hits</th>
                         <th>Image</th>
                         <th>Text</th>
                         <th>Tags</th>
@@ -37,14 +37,13 @@
                     $post_tags = $_POST["post_tags"];
                     $post_text = $_POST["post_text"];
                     $post_date = date("d-m-y");
-                    $post_comment_number = 8;
                     $post_image = $_FILES["post_image"]["name"];
                     $post_image_temp = $_FILES["post_image"]["tmp_name"];
 
                     move_uploaded_file($post_image_temp, "../img/$post_image");
 
-                    $query = "INSERT INTO posts (post_title, post_category, post_author, post_tags, post_date, post_comment_number, post_image, post_text)";
-                    $query .= "VALUES ('{$post_title}', '{$post_category}', '{$post_author}', '{$post_tags}', now(), '{$post_comment_number}', '{$post_image}', '{$post_text}')";
+                    $query = "INSERT INTO posts (post_title, post_category, post_author, post_tags, post_date,  post_image, post_text, post_hit)";
+                    $query .= "VALUES ('{$post_title}', '{$post_category}', '{$post_author}', '{$post_tags}', now(), '{$post_image}', '{$post_text}', '0')";
                     $create_post_query = mysqli_query($conn, $query);
                     header("Location: posts.php");
 
@@ -72,7 +71,7 @@
                             }
                         }
                         $sql_query2 = "UPDATE posts SET post_title = '$post_title', post_category = '$post_category', post_author = '$post_author', post_text = '$post_text', post_tags = '$post_tags', post_image = '$post_image' WHERE post_id = '$_POST[post_id]' ";
-                        $edit_post_qyer = mysqli_query($conn,$sql_query2);
+                        $edit_post_query = mysqli_query($conn,$sql_query2);
                         header("Location: posts.php");
 
                     }
@@ -108,7 +107,11 @@
                     $post_author = $row["post_author"];
                     $post_date = $row["post_date"];
                     $post_title = $row["post_title"];
-                    $post_comment_number = 8;
+
+                    $query = "SELECT * FROM comments WHERE comment_post_id = {$post_id} AND comment_status = 'approved'";
+                    $select_comment_query = mysqli_query($conn,$query);
+                    $post_comment = mysqli_num_rows($select_comment_query);
+
                     $post_image = $row["post_image"];
                     $post_text = substr($row["post_text"],0,50);
                     $post_tags = $row["post_tags"];
@@ -120,7 +123,7 @@
                     <td>{$post_category}</td>
                     <td>{$post_author}</td>
                     <td>{$post_date}</td>
-                    <td>{$post_comment_number}</td>
+                    <td>{$post_comment}</td>
                     <td><img width=250px src='../img/{$post_image}'></td>
                     <td>{$post_text}...</td>
                     <td>{$post_tags}</td>

@@ -23,6 +23,8 @@
 						
 						if(isset($_GET["look"])){
 							$p_post_id = $_GET["look"];
+							$sql_query2 = "UPDATE posts SET post_hit = post_hit + 1 WHERE post_id = '$p_post_id'"; 
+							$sql_query2_run = mysqli_query($conn,$sql_query2);
 							
 						}
 
@@ -34,7 +36,7 @@
 								$post_title = $row["post_title"];
 								$post_date = $row["post_date"];
 								$post_text = $row["post_text"];
-								$post_comment_number = $row["post_comment_number"];
+								$post_hit = $row["post_hit"];
 								$post_image = $row["post_image"];
 
 					?>
@@ -48,29 +50,33 @@
 								<ul class="blog-meta">
 									<li><i class="fas fa-user"></i><?php echo $post_author; ?></li>
 									<li><i class="fas fa-clock"></i><?php echo $post_date; ?></li>
-									<li><i class="fas fa-comments"></i><?php echo $post_comment_number; ?></li>
+									<li><i class="fas fa-eye"></i><?php echo $post_hit; ?></li>
 								</ul>
 								<h1><?php echo $post_title; ?></h1>
 								<p><?php echo $post_text; ?></p>
 							</div>
 						<?php } ?>
 
-						<!-- blog comments -->
-						<div class="blog-comments">
-							<h3>(1) Comments</h3>
-
-
-								<?php
+						
+						<?php
 								
 								$query = "SELECT * FROM comments WHERE comment_post_id = {$p_post_id} AND comment_status = 'approved'";
 								$query .= "ORDER BY comment_id DESC";
 								$select_comment_query = mysqli_query($conn,$query);
+								$count_post_comment = mysqli_num_rows($select_comment_query);
+						?>
+
+						<!-- blog comments -->
+						<div class="blog-comments">
+							<h3>(<?php echo $count_post_comment; ?>) Comments</h3>
+
+							<?php
 								while($row = mysqli_fetch_assoc($select_comment_query)){
 									$comment_date = $row["comment_date"];
 									$comment_author = $row["comment_author"];
 									$comment_text = $row["comment_text"];
 								
-								?>
+							?>
 
 
 							<!-- comment -->
@@ -100,6 +106,7 @@
 									$query = "INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_text, comment_status, comment_date)";
 									$query .= "VALUES ($p_post_id, '{$comment_author}', '{$comment_email}', '{$comment_text}', 'unapproved', now())";
 									$create_comment_query = mysqli_query($conn, $query);
+									header("Refresh: 0;");
 									}
 								}
 							

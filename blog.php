@@ -33,7 +33,7 @@
 							$post_title = $row["post_title"];
 							$post_date = $row["post_date"];
 							$post_text = substr($row["post_text"],0,90);
-							$post_comment_number = $row["post_comment_number"];
+							$post_hit = $row["post_hit"];
 							$post_image = $row["post_image"];
 
 					?>
@@ -47,7 +47,7 @@
 								<ul class="blog-meta">
 									<li><i class="fas fa-users"></i><span class="writer"><?php echo $post_author; ?></span></li>
 									<li><i class="fas fa-clock"></i><span class="writer"><?php echo $post_date; ?></span></li>
-									<li><i class="fas fa-comments"></i><span class="writer"><?php echo $post_comment_number;?></span></li>
+									<li><i class="fas fa-eye"></i><span class="writer"><?php echo $post_hit;?></span></li>
 								</ul>
 								<h3><?php echo $post_title; ?></h3>
 								<p><?php echo $post_text; ?>...</p>

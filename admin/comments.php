@@ -10,6 +10,20 @@
         <div class="container-fluid">
             <h1>Welcome to Admin Page</h1>
             <hr>
+            <h3>Filter Comments</h3>
+            <form action="" method="POST">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" value="approved" id="option2"> Approved
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" value="unapproved" id="option3"> Unapproved
+                    </label>
+                    </div>
+                <button class="btn btn-primary" name="filter_comment" type="submit">Filter</button>
+            </form>
+                </div></br>
+                
 
             <table class="table table-bordered">
                 <thead class="thead-dark">
@@ -27,55 +41,217 @@
                 <tbody>
 
                     <?php
-                        $sql_query = "SELECT * FROM comments ORDER BY comment_id DESC";
-                        $select_all_comments = mysqli_query($conn, $sql_query);
                         $k=1;
-                        while($row = mysqli_fetch_assoc($select_all_comments)){
-                            $comment_id = $row["comment_id"];
-                            $comment_post_id = $row["comment_post_id"];
-                            $comment_author = $row["comment_author"];
-                            $comment_date = $row["comment_date"];
-                            $comment_email = $row["comment_email"];
-                            $comment_status = $row["comment_status"];
-                            $comment_text = $row["comment_text"];
-                            $comment_text_sort = substr($row["comment_text"],0,50);
-                    
+                        if(isset($_POST["filter_comment"])){
+                            if(isset($_POST["options"])){
+                                $selected_filter = $_POST["options"];  
+                                if($selected_filter == "approved"){
+                                    $sql_query = "SELECT * FROM comments WHERE comment_status = 'approved' ORDER BY comment_id DESC";
+                                    $select_all_comments = mysqli_query($conn, $sql_query);
+                                        
+                                        while($row = mysqli_fetch_assoc($select_all_comments)){
+                                            $comment_id = $row["comment_id"];
+                                            $comment_post_id = $row["comment_post_id"];
+                                            $comment_author = $row["comment_author"];
+                                            $comment_date = $row["comment_date"];
+                                            $comment_email = $row["comment_email"];
+                                            $comment_status = $row["comment_status"];
+                                            $comment_text = $row["comment_text"];
+                                            $comment_text_sort = substr($row["comment_text"],0,50);
+                                            
+                
+                                            echo "
+                                            <tr>
+                                                <td>{$comment_id}</td>
+                                                <td>{$comment_author}</td>
+                                                <td>{$comment_email}</td>
+                                                <td>{$comment_text_sort}...</td>
+                                                <td>{$comment_date}</td>
+                                                <td>{$comment_status}</td>";
+                
+                                                $query = "SELECT * FROM posts WHERE post_id = $comment_post_id";
+                                                $select_post_id_query = mysqli_query($conn,$query);
+                                                while($row = mysqli_fetch_assoc($select_post_id_query)){
+                                                    $post_id = $row["post_id"];
+                                                    $post_title = $row["post_title"];
+                                                }
+                                                echo "<td>{$post_title}</td>";
+                
+                                                echo "
+                                                <td>
+                                                    <div class='dropdown'>
+                                                        <button class='btn btn-primary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                                                            Actions
+                                                        </button>
+                                                        <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                                                            <a class='dropdown-item' data-toggle='modal' data-target='#view_modal$k' href='#'>View</a>
+                                                            <div class='dropdown-divider'></div>
+                                                            <a class='dropdown-item' href='comments.php?delete={$comment_id}'>Delete</a>
+                                                            <div class='dropdown-divider'></div>
+                                                            <a class='dropdown-item' href='comments.php?approved={$comment_id}'>Approve</a>
+                                                            <div class='dropdown-divider'></div>
+                                                            <a class='dropdown-item' href='comments.php?unapproved={$comment_id}'>Unapprove</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>";
+                                        }
+                                }else if($selected_filter == "unapproved"){
+                                    $sql_query = "SELECT * FROM comments WHERE comment_status = 'unapproved' ORDER BY comment_id DESC";
+                                    $select_all_comments = mysqli_query($conn, $sql_query);
+                                        
+                                        while($row = mysqli_fetch_assoc($select_all_comments)){
+                                            $comment_id = $row["comment_id"];
+                                            $comment_post_id = $row["comment_post_id"];
+                                            $comment_author = $row["comment_author"];
+                                            $comment_date = $row["comment_date"];
+                                            $comment_email = $row["comment_email"];
+                                            $comment_status = $row["comment_status"];
+                                            $comment_text = $row["comment_text"];
+                                            $comment_text_sort = substr($row["comment_text"],0,50);
+                                            
+                
+                                            echo "
+                                            <tr>
+                                                <td>{$comment_id}</td>
+                                                <td>{$comment_author}</td>
+                                                <td>{$comment_email}</td>
+                                                <td>{$comment_text_sort}...</td>
+                                                <td>{$comment_date}</td>
+                                                <td>{$comment_status}</td>";
+                
+                                                $query = "SELECT * FROM posts WHERE post_id = $comment_post_id";
+                                                $select_post_id_query = mysqli_query($conn,$query);
+                                                while($row = mysqli_fetch_assoc($select_post_id_query)){
+                                                    $post_id = $row["post_id"];
+                                                    $post_title = $row["post_title"];
+                                                }
+                                                echo "<td>{$post_title}</td>";
+                
+                                                echo "
+                                                <td>
+                                                    <div class='dropdown'>
+                                                        <button class='btn btn-primary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                                                            Actions
+                                                        </button>
+                                                        <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                                                            <a class='dropdown-item' data-toggle='modal' data-target='#view_modal$k' href='#'>View</a>
+                                                            <div class='dropdown-divider'></div>
+                                                            <a class='dropdown-item' href='comments.php?delete={$comment_id}'>Delete</a>
+                                                            <div class='dropdown-divider'></div>
+                                                            <a class='dropdown-item' href='comments.php?approved={$comment_id}'>Approve</a>
+                                                            <div class='dropdown-divider'></div>
+                                                            <a class='dropdown-item' href='comments.php?unapproved={$comment_id}'>Unapprove</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>";
+                                        }
+                            }
+                            }else{
+                                $sql_query = "SELECT * FROM comments ORDER BY comment_id DESC";
+                                $select_all_comments = mysqli_query($conn, $sql_query);
+                            
+                                while($row = mysqli_fetch_assoc($select_all_comments)){
+                                    $comment_id = $row["comment_id"];
+                                    $comment_post_id = $row["comment_post_id"];
+                                    $comment_author = $row["comment_author"];
+                                    $comment_date = $row["comment_date"];
+                                    $comment_email = $row["comment_email"];
+                                    $comment_status = $row["comment_status"];
+                                    $comment_text = $row["comment_text"];
+                                    $comment_text_sort = substr($row["comment_text"],0,50);
+                                    
 
-                            echo "
-                            <tr>
-                                <td>{$comment_id}</td>
-                                <td>{$comment_author}</td>
-                                <td>{$comment_email}</td>
-                                <td>{$comment_text_sort}...</td>
-                                <td>{$comment_date}</td>
-                                <td>{$comment_status}</td>";
+                                    echo "
+                                    <tr>
+                                        <td>{$comment_id}</td>
+                                        <td>{$comment_author}</td>
+                                        <td>{$comment_email}</td>
+                                        <td>{$comment_text_sort}...</td>
+                                        <td>{$comment_date}</td>
+                                        <td>{$comment_status}</td>";
 
-                                $query = "SELECT * FROM posts WHERE post_id = $comment_post_id";
-                                $select_post_id_query = mysqli_query($conn,$query);
-                                while($row = mysqli_fetch_assoc($select_post_id_query)){
-                                    $post_id = $row["post_id"];
-                                    $post_title = $row["post_title"];
-                                }
-                                echo "<td>{$post_title}</td>";
+                                        $query = "SELECT * FROM posts WHERE post_id = $comment_post_id";
+                                        $select_post_id_query = mysqli_query($conn,$query);
+                                        while($row = mysqli_fetch_assoc($select_post_id_query)){
+                                            $post_id = $row["post_id"];
+                                            $post_title = $row["post_title"];
+                                        }
+                                        echo "<td>{$post_title}</td>";
 
-                                echo "
-                                <td>
-                                    <div class='dropdown'>
-                                        <button class='btn btn-primary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                                            Actions
-                                        </button>
-                                        <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                                            <a class='dropdown-item' data-toggle='modal' data-target='#view_modal$k' href='#'>View</a>
-                                            <div class='dropdown-divider'></div>
-                                            <a class='dropdown-item' href='comments.php?delete={$comment_id}'>Delete</a>
-                                            <div class='dropdown-divider'></div>
-                                            <a class='dropdown-item' href='comments.php?approved={$comment_id}'>Approve</a>
-                                            <div class='dropdown-divider'></div>
-                                            <a class='dropdown-item' href='comments.php?unapproved={$comment_id}'>Unapprove</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>";
+                                        echo "
+                                        <td>
+                                            <div class='dropdown'>
+                                                <button class='btn btn-primary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                                                    Actions
+                                                </button>
+                                                <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                                                    <a class='dropdown-item' data-toggle='modal' data-target='#view_modal$k' href='#'>View</a>
+                                                    <div class='dropdown-divider'></div>
+                                                    <a class='dropdown-item' href='comments.php?delete={$comment_id}'>Delete</a>
+                                                    <div class='dropdown-divider'></div>
+                                                    <a class='dropdown-item' href='comments.php?approved={$comment_id}'>Approve</a>
+                                                    <div class='dropdown-divider'></div>
+                                                    <a class='dropdown-item' href='comments.php?unapproved={$comment_id}'>Unapprove</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>";
+                                    }
+                            }
+                            }else{
+                                $sql_query = "SELECT * FROM comments ORDER BY comment_id DESC";
+                                $select_all_comments = mysqli_query($conn, $sql_query);
+                            
+                                while($row = mysqli_fetch_assoc($select_all_comments)){
+                                    $comment_id = $row["comment_id"];
+                                    $comment_post_id = $row["comment_post_id"];
+                                    $comment_author = $row["comment_author"];
+                                    $comment_date = $row["comment_date"];
+                                    $comment_email = $row["comment_email"];
+                                    $comment_status = $row["comment_status"];
+                                    $comment_text = $row["comment_text"];
+                                    $comment_text_sort = substr($row["comment_text"],0,50);
+                                    
+
+                                    echo "
+                                    <tr>
+                                        <td>{$comment_id}</td>
+                                        <td>{$comment_author}</td>
+                                        <td>{$comment_email}</td>
+                                        <td>{$comment_text_sort}...</td>
+                                        <td>{$comment_date}</td>
+                                        <td>{$comment_status}</td>";
+
+                                        $query = "SELECT * FROM posts WHERE post_id = $comment_post_id";
+                                        $select_post_id_query = mysqli_query($conn,$query);
+                                        while($row = mysqli_fetch_assoc($select_post_id_query)){
+                                            $post_id = $row["post_id"];
+                                            $post_title = $row["post_title"];
+                                        }
+                                        echo "<td>{$post_title}</td>";
+
+                                        echo "
+                                        <td>
+                                            <div class='dropdown'>
+                                                <button class='btn btn-primary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                                                    Actions
+                                                </button>
+                                                <div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                                                    <a class='dropdown-item' data-toggle='modal' data-target='#view_modal$k' href='#'>View</a>
+                                                    <div class='dropdown-divider'></div>
+                                                    <a class='dropdown-item' href='comments.php?delete={$comment_id}'>Delete</a>
+                                                    <div class='dropdown-divider'></div>
+                                                    <a class='dropdown-item' href='comments.php?approved={$comment_id}'>Approve</a>
+                                                    <div class='dropdown-divider'></div>
+                                                    <a class='dropdown-item' href='comments.php?unapproved={$comment_id}'>Unapprove</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>";
+                            }
+                            
                     
                     ?>
 
