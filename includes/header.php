@@ -1,6 +1,9 @@
 
 <?php include "includes/db.php"; ?>
 
+
+<base href="http://localhost/blogW/">
+
 <!doctype html>
 <html lang="en">
 

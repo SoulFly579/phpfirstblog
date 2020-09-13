@@ -2,6 +2,7 @@
 
 	<!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
+<?php include "fonksiyonlar.php"; ?>
 
 
 	<!--==========================
@@ -50,7 +51,7 @@
 								</ul>
 								<h3><?php echo $post_title; ?></h3>
 								<p><?php echo $post_text; ?>...</p>
-								<a href="blog-single.php?look=<?php echo $post_id; ?>">Read More</a>
+								<a href="blog/<?=seo($row["post_title"]).'/'."$post_id"; ?>">Read More</a>
 							</div>
 						</div>
 					</div>

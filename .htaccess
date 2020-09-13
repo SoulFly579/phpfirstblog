@@ -1,0 +1,12 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+
+
+RewriteRule ^index$ index.php [NC,L]
+RewriteRule ^admin/posts$ admin/posts.php [NC,L]
+
+ErrorDocument 404 http://localhost/blogW/404
+RewriteRule ^404$ 404.php [NC,L]
+
+RewriteRule ^blog/([0-9a-zA-Z-_]+)/([0-9]+)$  blog-single.php?sef=$1&look=$2 [L,QSA]

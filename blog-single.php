@@ -1,4 +1,5 @@
 <?php  include "includes/header.php"; ?>
+<?php ob_start(); ?>
 
 	<!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
@@ -20,7 +21,6 @@
 
 				<?php
 						
-						
 						if(isset($_GET["look"])){
 							$p_post_id = $_GET["look"];
 							
@@ -29,13 +29,13 @@
 							$sql_query = "SELECT * FROM posts WHERE post_id = $p_post_id";
 							$select_all_posts = mysqli_query($conn,$sql_query);
 						
-						while ($row = mysqli_fetch_assoc($select_all_posts)){
-							$post_author = $row["post_author"];
-							$post_title = $row["post_title"];
-							$post_date = $row["post_date"];
-							$post_text = $row["post_text"];
-							$post_comment_number = $row["post_comment_number"];
-							$post_image = $row["post_image"];
+							while ($row = mysqli_fetch_assoc($select_all_posts)){
+								$post_author = $row["post_author"];
+								$post_title = $row["post_title"];
+								$post_date = $row["post_date"];
+								$post_text = $row["post_text"];
+								$post_comment_number = $row["post_comment_number"];
+								$post_image = $row["post_image"];
 
 					?>
 
@@ -59,14 +59,54 @@
 						<div class="blog-comments">
 							<h3>(1) Comments</h3>
 
+
+								<?php
+								
+								$query = "SELECT * FROM comments WHERE comment_post_id = {$p_post_id} AND comment_status = 'approved'";
+								$query .= "ORDER BY comment_id DESC";
+								$select_comment_query = mysqli_query($conn,$query);
+								while($row = mysqli_fetch_assoc($select_comment_query)){
+									$comment_date = $row["comment_date"];
+									$comment_author = $row["comment_author"];
+									$comment_text = $row["comment_text"];
+								
+								?>
+
+
 							<!-- comment -->
 							<div class="media">
 								<div class="media-body">
-									<h4 class="media-heading">Joe Doe<span class="time">2 min ago</span></h4>
-									<p>Nec feugiat nisl pretium fusce id velit ut tortor pretium. Nisl purus in mollis nunc sed. Nunc non blandit massa enim nec.</p>
+									<h4 class="media-heading"><?php echo $comment_author; ?><span class="time"><?php echo $comment_date ;?></span></h4>
+									<p><?php echo $comment_text; ?></p>
 								</div>
 							</div>
 							<!-- /comment -->
+
+							<?php } ?>
+							
+							<?php
+
+								if(isset($_POST["create_comment"])){
+									$p_post_id = $_GET["look"];
+									$comment_author = $_POST["comment_author"];
+									$comment_email = $_POST["comment_email"];
+									$comment_text = $_POST["comment_text"];
+									
+									if($comment_author == "" || empty($comment_author && $comment_email == "" || empty($comment_email && $comment_text == "" || empty($comment_text)))){
+										echo "<div class='alert alert-danger' role='alert'>
+												Please fill in all fields !
+											</div>";
+									}else{
+									$query = "INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_text, comment_status, comment_date)";
+									$query .= "VALUES ($p_post_id, '{$comment_author}', '{$comment_email}', '{$comment_text}', 'unapproved', now())";
+									$create_comment_query = mysqli_query($conn, $query);
+									}
+								}
+							
+							
+							?>
+
+
 
 						</div>
 						<!-- /blog comments -->
@@ -74,12 +114,12 @@
 						<!-- reply form -->
 						<div class="reply-form">
 							<h3>Leave A Comment</h3>
-							<form>
-								<input class="form-control mb-4" type="text" placeholder="Name">
-								<input class="form-control mb-4" type="email" placeholder="Email">
-								<textarea class="form-control mb-4" row="5" placeholder="Add Your Commment"></textarea>
+							<form action="" method="post">
+								<input class="form-control mb-4" name="comment_author" type="text" placeholder="Name">
+								<input class="form-control mb-4" name="comment_email" type="email" placeholder="Email">
+								<textarea class="form-control mb-4" name="comment_text" row="5" placeholder="Add Your Commment"></textarea>
                                 
-								<button type="submit" class="main-btn">Submit</button>
+								<button type="submit" name="create_comment" class="main-btn">Submit</button>
 							</form>
 						</div>
 						<!-- /reply form -->
