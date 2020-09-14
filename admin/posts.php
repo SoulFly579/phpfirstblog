@@ -19,6 +19,7 @@
                         <th>Category</th>
                         <th>Author</th>
                         <th>Date</th>
+                        <th>Comments</th>
                         <th>Hits</th>
                         <th>Image</th>
                         <th>Text</th>
@@ -32,7 +33,12 @@
                 if(isset($_POST["add_post"])){
                     
                     $post_title = $_POST["post_title"];
-                    $post_category = $_POST["post_category"];
+                        $post_category_name = $_POST["post_category"];
+                        $query_post_category = "SELECT * FROM categories WHERE category_name = '$post_category_name'";
+                        $query_post_category2 = mysqli_query($conn,$query_post_category);
+                        while($row = mysqli_fetch_assoc($query_post_category2)){
+                            $post_category = $row["category_id"];
+                        }
                     $post_author = $_POST["post_author"];
                     $post_tags = $_POST["post_tags"];
                     $post_text = $_POST["post_text"];
@@ -53,7 +59,12 @@
                 <?php
                     if(isset($_POST["edit_post"])){
                         $post_title = $_POST["post_title"];
-                        $post_category = $_POST["post_category"];
+                            $post_category_name = $_POST["post_category"];
+                            $query_post_category = "SELECT * FROM categories WHERE category_name = '$post_category_name'";
+                            $query_post_category2 = mysqli_query($conn,$query_post_category);
+                            while($row = mysqli_fetch_assoc($query_post_category2)){
+                                $post_category = $row["category_id"];
+                            }
                         $post_author = $_POST["post_author"];
                         $post_text = $_POST["post_text"];
                         $post_tags = $_POST["post_tags"];
@@ -103,7 +114,12 @@
                 $k=1;
                 while($row = mysqli_fetch_assoc($select_all_posts)){
                     $post_id = $row["post_id"];
-                    $post_category = $row["post_category"];
+                        $post_category_id = $row["post_category"];
+                        $query_post_category = "SELECT * FROM categories WHERE category_id = '$post_category_id'";
+                        $query_post_category2 = mysqli_query($conn,$query_post_category);
+                        while($cat_row = mysqli_fetch_array($query_post_category2)){
+                            $post_category = $cat_row["category_name"];
+                        }
                     $post_author = $row["post_author"];
                     $post_date = $row["post_date"];
                     $post_title = $row["post_title"];
@@ -115,6 +131,7 @@
                     $post_image = $row["post_image"];
                     $post_text = substr($row["post_text"],0,50);
                     $post_tags = $row["post_tags"];
+                    $post_hit = $row["post_hit"];
 
 
                     echo "<tr>
@@ -124,6 +141,7 @@
                     <td>{$post_author}</td>
                     <td>{$post_date}</td>
                     <td>{$post_comment}</td>
+                    <td>{$post_hit}</td>
                     <td><img width=250px src='../img/{$post_image}'></td>
                     <td>{$post_text}...</td>
                     <td>{$post_tags}</td>
@@ -167,12 +185,13 @@
                                                 $edit_category_sql = "SELECT * FROM categories";
                                                 $edit_category_run = mysqli_query($conn,$edit_category_sql);
                                                 while($edit_category_row = mysqli_fetch_assoc($edit_category_run)){
-                                                    $edited_category = $edit_category_row["category_name"];
+                                                    $edited_category = $edit_category_row["category_id"];
+                                                    $category_of_name = $edit_category_row["category_name"];
 
-                                                    if($edit_category_row["category_name"] ==  $row["post_category"]){
-                                                        echo "<option selected>$edited_category</option>";
+                                                    if($edit_category_row["category_id"] ==  $row["post_category"]){
+                                                        echo "<option selected>$category_of_name</option>";
                                                     }else{
-                                                        echo "<option>$edited_category</option>";
+                                                        echo "<option>$category_of_name</option>";
                                                     }
                                                 }
 

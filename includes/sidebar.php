@@ -20,13 +20,14 @@
                         $select_all_categories = mysqli_query($conn,$sql_query);
                         
                         while ($row = mysqli_fetch_assoc($select_all_categories)){
+							$category_id = $row["category_id"];
 							$category_name = $row["category_name"];
 
-							$query2 = "SELECT * FROM posts WHERE post_category = '$category_name' ";
+							$query2 = "SELECT * FROM posts WHERE post_category = '$category_id' ";
 							$send_category_query = mysqli_query($conn,$query2);
 							$count_category_posts = mysqli_num_rows($send_category_query); 
 							
-                            echo "<a href='category.php?category=$category_name'>{$category_name}<span>({$count_category_posts})</span></a>";
+                            echo "<a href='category.php?category=$category_id/$category_name'>{$category_name}<span>({$count_category_posts})</span></a>";
                         }
                         
                         ?>
