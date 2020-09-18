@@ -1,5 +1,23 @@
+<?php ob_start(); ?>
 <?php include "../includes/db.php"; ?>
+<?php session_start(); ?>
 
+
+
+<?php
+
+
+  if(!isset($_SESSION["role"])){
+    header("Location: login.php");
+    }else{
+      if($_SESSION["role"] !=="admin"){
+        header("Location: ../index.php");
+      }
+  
+    }
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,7 +56,7 @@
 
       <!-- Navbar Search -->
         <div class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="logout.php">
                 <span>Log Out</span>
                 <i class="fas fa-sign-out-alt"></i>
             </a>

@@ -24,7 +24,27 @@
 
 					<?php
 
-						$sql_query = "SELECT * FROM posts ORDER BY post_id DESC";
+						if(isset($_GET["page"])){
+							$page = $_GET["page"];
+						}else{
+							$page = "";
+						}
+
+						if($page == "" || $page == 1){
+							$starter_post = 0;
+						}else{
+							$starter_post = ($page * 4) - 4 ;
+						}
+
+
+						$sql_query2 = "SELECT * FROM posts";
+						$look_all_post = mysqli_query($conn,$sql_query2);
+						$all_post_count = mysqli_num_rows($look_all_post);
+						$page_number = ceil($all_post_count / 4) ; 
+
+
+
+						$sql_query = "SELECT * FROM posts ORDER BY post_id DESC LIMIT $starter_post, 4";
 						$select_all_posts = mysqli_query($conn,$sql_query);
 						
 						while ($row = mysqli_fetch_assoc($select_all_posts)){
@@ -69,17 +89,24 @@
 				<?php include "includes/sidebar.php"; ?>
 				
 			</div>
+
+
 			<div class="row">
 				<nav aria-label="Page navigation example">
 					<ul class="pagination justify-content-center">
-						<li class="page-item disabled">
-						<a class="page-link" href="#" tabindex="-1">Previous</a>
-						</li>
-						<li class="page-item"><a class="page-link" href="#">1</a></li>
-						<li class="page-item"><a class="page-link" href="#">2</a></li>
-						<li class="page-item"><a class="page-link" href="#">3</a></li>
+						<li class="page-item "><a class="page-link" href="blog.php?page=<?php if($page>1){echo $page-1;}else{echo 1;}?>" >Previous</a></li>
+						
+							<?php
+
+							for($i=1; $i<= $page_number; $i++){
+								echo "<li class='page-item'><a class='page-link' href='blog.php?page={$i}'>{$i}</a></li>";
+							}
+
+
+
+							?>
 						<li class="page-item">
-						<a class="page-link" href="#">Next</a>
+						<a class="page-link" href="blog.php?page=<?php if($page_number > $page){echo $page+1;}else{echo $page;}?>" >Next</a>
 						</li>
 					</ul>
 				</nav>
